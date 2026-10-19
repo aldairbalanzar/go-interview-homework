@@ -12,10 +12,12 @@ const QUERY = `
       id
       name
       email
+      taskCount
       tasks {
         id
         title
         status
+        dueDate
         tags
       }
     }
@@ -62,6 +64,10 @@ function renderTask(task) {
 
   const meta = el("div", { class: "task-meta" }, [statusPill]);
 
+  if (task.dueDate) {
+    meta.appendChild(el("span", { class: "due-date", text: `due ${task.dueDate}` }));
+  }
+
   for (const tag of task.tags || []) {
     meta.appendChild(el("span", { class: "tag", text: tag }));
   }
@@ -72,6 +78,8 @@ function renderTask(task) {
 function renderUser(user) {
   const heading = el("h2", { text: user.name });
   const email = el("p", { class: "email", text: user.email });
+  const n = user.taskCount ?? 0;
+  const count = el("p", { class: "email", text: `${n} task${n === 1 ? "" : "s"}` });
 
   const tasks = el(
     "ul",
@@ -79,7 +87,7 @@ function renderUser(user) {
     (user.tasks || []).map(renderTask)
   );
 
-  return el("section", { class: "user-card" }, [heading, email, tasks]);
+  return el("section", { class: "user-card" }, [heading, email, count, tasks]);
 }
 
 function setStatus(text, isError = false) {

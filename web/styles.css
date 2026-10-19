@@ -163,6 +163,11 @@ main {
   color: var(--ally-midnight);
 }
 
+.due-date {
+  font-size: 11px;
+  color: var(--ally-highlighter);
+}
+
 .tag {
   display: inline-block;
   padding: 2px 8px;
