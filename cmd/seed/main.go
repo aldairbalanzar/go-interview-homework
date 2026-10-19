@@ -132,8 +132,10 @@ func seed(ctx context.Context, db *sql.DB) error {
 
 		for _, t := range u.Tasks {
 			var taskID int64
+			// Postgres doesn't treat backticks as identifier quotes (that's MySQL).
+			// First run failed here after users inserted; dropping them matches the schema.
 			err := tx.QueryRowContext(ctx,
-				"INSERT INTO tasks (`user_id`, `title`, `description`, `status`, `due_date`) VALUES ($1, $2, $3, $4, $5) RETURNING id",
+				"INSERT INTO tasks (user_id, title, description, status, due_date) VALUES ($1, $2, $3, $4, $5) RETURNING id",
 				userID, t.Title, nullableString(t.Description), t.Status, t.DueDate,
 			).Scan(&taskID)
 			if err != nil {
